@@ -13,7 +13,6 @@ from config import (
     LOG_LEVEL,
     LOG_FORMAT,
     CLEANUP_INTERVAL_HOURS,
-    API_VERSION,
     USE_YTDLP
 )
 from utils import (
@@ -55,8 +54,8 @@ if USE_YTDLP:
         logger.warning("yt-dlp не установлен. Для работы бота необходимо установить yt-dlp.")
         logger.warning("Установите yt-dlp с помощью команды: pip install yt-dlp")
 
-# Создаем экземпляр бота с указанием версии API
-bot = Bot(token=BOT_TOKEN, api=API_VERSION)
+# Создаем экземпляр бота
+bot = Bot(token=BOT_TOKEN)
 
 # Флаг для отслеживания запущенной задачи очистки
 cleanup_task = None
@@ -164,7 +163,6 @@ def run_bot():
         logger.info(f"ID беседы: {CONVERSATION_ID}")
         logger.info(f"Директория для клипов: {CLIPS_DIR}")
         logger.info(f"Время хранения клипов: {CLEANUP_INTERVAL_HOURS} часов")
-        logger.info(f"Версия API: {API_VERSION}")
         logger.info(f"Использование yt-dlp: {'Да' if USE_YTDLP else 'Нет'}")
         
         # Запускаем бота

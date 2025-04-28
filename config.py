@@ -5,8 +5,7 @@
 # токены и идентификаторы
 #BOT_TOKEN = 
 #GROUP_ID = 
-#CONVERSATION_ID =  
-API_VERSION = "5.199"  #версия API ВКонтакте
+#CONVERSATION_ID = 
 
 CLIPS_DIR = "clips"  # директория для сохранения клипов
 
