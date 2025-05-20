@@ -1,16 +1,19 @@
 """
 Утилиты для работы бота
 """
-
+from vkbottle import Bot, VideoUploader
 import os
 import logging
 import subprocess
 import asyncio
+import random
 from datetime import datetime, timedelta
 
 import aiohttp
 
 from config import (
+    USER_TOKEN,
+    GROUP_ID,
     CLIPS_DIR,
     CLEANUP_INTERVAL_HOURS,
     USE_YTDLP,
@@ -19,6 +22,8 @@ from config import (
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
+bot = Bot(USER_TOKEN)
+api = bot.api
 
 
 async def cleanup_old_clips():
@@ -50,6 +55,34 @@ async def cleanup_old_clips():
         logger.info("Очистка завершена. Удалено %s файлов.", deleted_files)
     except Exception as e:
         logger.error("Ошибка при очистке старых клипов: %s", e)
+
+
+def get_random_clip():
+    clips = [f for f in os.listdir(CLIPS_DIR) if os.path.isfile(os.path.join(CLIPS_DIR, f))]
+    if not clips:
+        return
+    clip = os.path.join(CLIPS_DIR, random.choice(clips))
+    logger.info("Выбран клип для загрузки: %s", clip)
+    return clip
+
+
+async def post_clip_to_wall():
+        clip_path = get_random_clip()
+        print(f"Выбран клип для загрузки: {clip_path}")
+
+        video_uploader = VideoUploader(api)
+        attachment = await video_uploader.upload(
+            file_source=clip_path,
+            name="Клип",
+            description="бебебе",
+            group_id=GROUP_ID,
+            wallpost=True
+        )
+        os.remove(clip_path)
+
+        # Публикуем видео на стене сообщества
+        # await apigroup.wall.post(owner_id=f"-{GROUP_ID}", attachments=attachment, from_group=1, message=",t,hf")
+        logger.info(f"Клип успешно опубликован на стене сообщества (ID группы: {GROUP_ID}).")
 
 
 async def download_with_ytdlp(video_url, output_path):

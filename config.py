@@ -3,12 +3,17 @@
 """
 
 # токены и идентификаторы
-#BOT_TOKEN = 
-#GROUP_ID = 
-#CONVERSATION_ID = 
+# BOT_TOKEN = 
+# USER_TOKEN = 
+# GROUP_ID = 
+# OWNER_ID = 
+# CONVERSATION_ID = 
 
 CLIPS_DIR = "clips"  # директория для сохранения клипов
 
+START_HOUR = 4 #час начала запуска цикла загрузки
+END_HOUR = 8 #час конца запуска цикла загрузки
+POSTING_INTERVAL = 1 #интервал постинга клипов
 CLEANUP_INTERVAL_HOURS = 24  #интервал проверки и удаления старых клипов в часах
 
 #Логирование

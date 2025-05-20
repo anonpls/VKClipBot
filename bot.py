@@ -1,7 +1,7 @@
 import os
 import logging
 import asyncio
-from datetime import datetime
+from datetime import datetime, time
 
 from vkbottle.bot import Bot, Message
 
@@ -13,9 +13,13 @@ from config import (
     LOG_LEVEL,
     LOG_FORMAT,
     CLEANUP_INTERVAL_HOURS,
-    USE_YTDLP
+    USE_YTDLP,
+    START_HOUR,
+    END_HOUR,
+    POSTING_INTERVAL
 )
 from utils import (
+    post_clip_to_wall,
     cleanup_old_clips, 
     download_clip, 
     generate_filename, 
@@ -154,6 +158,20 @@ async def scheduled_cleanup():
             await asyncio.sleep(60)
 
 
+async def scheduled_posting():
+    """
+    Периодический постинг клипов.
+    """
+    while True:
+        now = datetime.now().time()
+        if time(START_HOUR) <= now <= time(END_HOUR):
+            logger.info("Запуск сессии постинга клипов")
+            await post_clip_to_wall()
+            await asyncio.sleep(POSTING_INTERVAL * 3600)  # Ждём N часов после поста
+        else:
+            await asyncio.sleep(60)
+
+
 def run_bot():
     
     try:
@@ -185,6 +203,7 @@ if __name__ == "__main__":
         
         # Запускаем задачу периодической очистки в фоне
         cleanup_task = loop.create_task(scheduled_cleanup())
+        posting_task = loop.create_task(scheduled_posting())
         
         # Запускаем бота в основном потоке
         run_bot()
