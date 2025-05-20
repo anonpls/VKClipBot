@@ -15,6 +15,8 @@ from config import (
     USER_TOKEN,
     GROUP_ID,
     CLIPS_DIR,
+    CLIP_NAME,
+    CLIP_DESCRIPTION,
     CLEANUP_INTERVAL_HOURS,
     USE_YTDLP,
     YTDLP_PATH
@@ -58,6 +60,9 @@ async def cleanup_old_clips():
 
 
 def get_random_clip():
+    """
+    Выбор случайного клипа для публикации
+    """
     clips = [f for f in os.listdir(CLIPS_DIR) if os.path.isfile(os.path.join(CLIPS_DIR, f))]
     if not clips:
         return
@@ -67,22 +72,25 @@ def get_random_clip():
 
 
 async def post_clip_to_wall():
-        clip_path = get_random_clip()
-        print(f"Выбран клип для загрузки: {clip_path}")
+    """
+    Публицакия клипов на стене группы
+    """
+    clip_path = get_random_clip()
+    print(f"Выбран клип для загрузки: {clip_path}")
 
+    try:
         video_uploader = VideoUploader(api)
         attachment = await video_uploader.upload(
             file_source=clip_path,
-            name="Клип",
-            description="бебебе",
+            name=CLIP_NAME,
+            description=CLIP_DESCRIPTION,
             group_id=GROUP_ID,
             wallpost=True
         )
         os.remove(clip_path)
-
-        # Публикуем видео на стене сообщества
-        # await apigroup.wall.post(owner_id=f"-{GROUP_ID}", attachments=attachment, from_group=1, message=",t,hf")
         logger.info(f"Клип успешно опубликован на стене сообщества (ID группы: {GROUP_ID}).")
+    except Exception as e:
+        logger.error("Ошибка при загрузке клипа на стену: %s", e)
 
 
 async def download_with_ytdlp(video_url, output_path):

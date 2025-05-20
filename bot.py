@@ -165,9 +165,10 @@ async def scheduled_posting():
     while True:
         now = datetime.now().time()
         if time(START_HOUR) <= now <= time(END_HOUR):
-            logger.info("Запуск сессии постинга клипов")
+            logger.info(f"Запуск сессии постинга клипов длительностью {END_HOUR - START_HOUR} часа/ов (с {START_HOUR} до {END_HOUR})")
+            logger.info(f"Интервал загрузки клипа в группу - {POSTING_INTERVAL} часа/ов")
             await post_clip_to_wall()
-            await asyncio.sleep(POSTING_INTERVAL * 3600)  # Ждём N часов после поста
+            await asyncio.sleep(POSTING_INTERVAL * 3600)
         else:
             await asyncio.sleep(60)
 
