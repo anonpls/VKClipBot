@@ -8,7 +8,7 @@ from vkbottle.bot import Bot, Message
 from config import (
     BOT_TOKEN,
     GROUP_ID,
-    CONVERSATION_ID,
+    CONVERSATION_IDS,
     CLIPS_DIR,
     LOG_LEVEL,
     LOG_FORMAT,
@@ -78,13 +78,13 @@ async def message_handler(message: Message):
         
         # Проверяем, что сообщение из нужной беседы
         peer_id = message.peer_id
-        if peer_id != CONVERSATION_ID:
+        if peer_id not in CONVERSATION_IDS:
             return
         
         
         # Подробное логирование входящего сообщения
         logger.info(f"Получено новое сообщение: {message.text}")
-        logger.info(f"От пользователя: {message.from_id}, Peer ID: {message.peer_id}, CONVERSATION_ID: {CONVERSATION_ID}")
+        logger.info(f"От пользователя: {message.from_id}, Peer ID: {message.peer_id}, CONVERSATION_ID: {CONVERSATION_IDS}")
         logger.info("Сообщение из целевой беседы, продолжаем обработку")
             
         # Проверяем наличие вложений
@@ -180,7 +180,7 @@ def run_bot():
         # Выводим информацию о запуске
         logger.info("Запуск бота ВКонтакте для загрузки клипов...")
         logger.info(f"ID группы: {GROUP_ID}")
-        logger.info(f"ID беседы: {CONVERSATION_ID}")
+        logger.info(f"ID беседы: {CONVERSATION_IDS}")
         logger.info(f"Директория для клипов: {CLIPS_DIR}")
         logger.info(f"Время хранения клипов: {CLEANUP_INTERVAL_HOURS} часов")
         logger.info(f"Использование yt-dlp: {'Да' if USE_YTDLP else 'Нет'}")

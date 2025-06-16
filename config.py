@@ -12,7 +12,7 @@ USER_TOKEN = ""
 # # айди группы
 GROUP_ID = 
 # # айди беседы с ботом
-CONVERSATION_ID = 
+CONVERSATION_IDS = []
 
 CLIP_NAME = ""
 CLIP_DESCRIPTION = ""
@@ -28,8 +28,7 @@ END = f"{END_HOUR}:{END_MINUTE}"
 POSTING_INTERVAL = 1 #интервал постинга клипов в часах
 CLEANUP_INTERVAL_HOURS = 24  #интервал проверки и удаления старых клипов в часах
 
-#дата последнего поста в формате datetime(год, месяц, число, час, минута, секунда)
-LAST_TIME_POST = datetime(2025, 6, 16, 21, 39, 46)
+LAST_TIME_POST = datetime(2025, 6, 16, 21, 25, 30)
 
 #Логирование
 LOG_LEVEL = "INFO"  # Уровень логирования (DEBUG, INFO, WARNING, ERROR, CRITICAL)
