@@ -15,7 +15,9 @@ from config import (
     CLEANUP_INTERVAL_HOURS,
     USE_YTDLP,
     START_HOUR,
+    START_MINUTE,
     END_HOUR,
+    END_MINUTE,
     POSTING_INTERVAL
 )
 from utils import (
@@ -73,21 +75,20 @@ async def message_handler(message: Message):
         message: Объект сообщения от API ВКонтакте
     """
     try:
-        # Подробное логирование входящего сообщения
-        logger.info(f"Получено новое сообщение: {message.text}")
-        logger.info(f"От пользователя: {message.from_id}, Peer ID: {message.peer_id}, CONVERSATION_ID: {CONVERSATION_ID}")
         
         # Проверяем, что сообщение из нужной беседы
         peer_id = message.peer_id
         if peer_id != CONVERSATION_ID:
-            logger.info(f"Сообщение из другой беседы (ID: {peer_id}), игнорируем")
             return
         
+        
+        # Подробное логирование входящего сообщения
+        logger.info(f"Получено новое сообщение: {message.text}")
+        logger.info(f"От пользователя: {message.from_id}, Peer ID: {message.peer_id}, CONVERSATION_ID: {CONVERSATION_ID}")
         logger.info("Сообщение из целевой беседы, продолжаем обработку")
             
         # Проверяем наличие вложений
         if not message.attachments:
-            logger.info("Сообщение без вложений, игнорируем")
             return
         
         # Логируем все вложения с подробной информацией
@@ -164,8 +165,8 @@ async def scheduled_posting():
     """
     while True:
         now = datetime.now().time()
-        if time(START_HOUR) <= now <= time(END_HOUR):
-            logger.info(f"Запуск сессии постинга клипов длительностью {END_HOUR - START_HOUR} часа/ов (с {START_HOUR} до {END_HOUR})")
+        if time(START_HOUR, START_MINUTE) <= now <= time(END_HOUR, END_MINUTE):
+            logger.info(f"Запуск сессии постинга клипов с {time(START_HOUR, START_MINUTE).strftime("%H:%M")} до {time(END_HOUR, END_MINUTE).strftime("%H:%M")}.")
             logger.info(f"Интервал загрузки клипа в группу - {POSTING_INTERVAL} часа/ов")
             await post_clip_to_wall()
             await asyncio.sleep(POSTING_INTERVAL * 3600)
